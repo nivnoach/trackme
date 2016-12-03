@@ -30,11 +30,13 @@ a {
 
 .ticker-status {
     top: 10px;
+    height: 48px;
     background-color: black;
 }
 
 .ticker-error {
-    top: 54px;
+    top: 76px;
+    height: 24px;
     background-color: red;
     display: none;
 }
@@ -115,4 +117,11 @@ html, body {
 .btn-start:active {
     position:relative;
     top:1px;
+}
+
+.github-link img {
+    position: relative;
+    top: 70px;
+    width: 30px;
+    height: 30px;
 }
