@@ -1,0 +1,62 @@
+{% extends "_map_layout.njk" %}
+
+{% block ticker %}
+    following<span id="dots"></span>
+    <br/>
+    <span>updated <span id="last-reported">???</span> ago</span> |
+    <span><a href="/{{ id }}">start reporting</a></span>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function update() {
+            $.ajax('/{{ id }}/get', {
+                success: function(pos) {
+                    $("#error").hide();
+                    pos.lat = +pos.lat;
+                    pos.lng = +pos.lng;
+
+                    marker.setMap(null);
+                    marker = new google.maps.Marker({
+                        position: pos,
+                        map: map
+                    }); 
+
+                    $("#last-reported").html(new timespan(pos.timestamp).toString())
+
+                    map.setCenter(pos);
+
+                    adddot();
+                },
+                error: function(err) {
+                    // cannot reach server (no network?)
+                    $("#error").html(err.responseText || "cannot see followee :-/"); 
+                    $("#error").show();
+                },
+                complete: function(xhr, status) {
+                    setTimeout(update, 1000);
+                }
+            });
+        }
+
+        function timespan(timestamp) {
+            this._ts = new Date(timestamp);
+            this.toString = function() {
+                var millisec = new Date().getTime() - this._ts.getTime();
+                var seconds = millisec / 1000; 
+                var minutes = millisec / 60000;
+
+                if (minutes > 30) return "long time";
+                if (minutes < 1) return Math.floor(seconds) + " sec";
+                return "~" + Math.floor(minutes) + " min"; 
+            };
+            return this;
+        }
+
+        $(function() {
+            setTimeout(update, 1000);
+        })
+
+    </script>
+   
+{% endblock %}

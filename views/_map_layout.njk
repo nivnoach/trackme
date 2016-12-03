@@ -1,0 +1,48 @@
+{% extends "_layout.njk" %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+        <div class="ticker ticker-status">
+            {% block ticker %}{% endblock %}
+        </div>
+
+        <div class="ticker ticker-error" id="error">
+        </div>
+
+        <div id="map"></div>
+
+        <script>
+            var map, marker;
+            function initMap() {
+                var initpos = {lat: -34.397, lng: 150.644};
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: initpos,
+                    zoom: 16
+                });
+
+                marker = new google.maps.Marker({
+                    position: initpos,
+                    map: map
+                });                
+            }
+
+            /**
+                report error to the ui
+            */
+            function error(err) {
+                $("#error").html(err.responseText || "failed reading location"); 
+                $("#error").show();
+            }
+
+            function adddot() {
+                var out = $("#dots").html();
+                out = (out.length >= 10) ? "." : out + '.';
+                $("#dots").html(out);
+            }            
+        </script>
+
+        {% block scripts %}{% endblock %}
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm1S6OZM5RDXC1sU0jMxUO0KUtB04yzlg&callback=initMap" async defer></script>
+{% endblock %}
